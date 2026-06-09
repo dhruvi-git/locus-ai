@@ -1,188 +1,117 @@
-# Full Stack Agentic App Builder with Next JS, Supabase, Gemini AI, Cline SDK, Shadcn UI Tutorial 🔥🔥
+# 🌌 Locus AI
+**Where Idea Meets Reality**
 
-## https://www.youtube.com/watch?v=UUK93oW0SaA
+Locus AI is a full-stack, AI-powered React app builder. Simply describe the application you want to build, and Locus AI will autonomously write, compile, and render production-ready React code live in your browser. 
 
-<img width="1280" height="720" alt="1" src="https://github.com/user-attachments/assets/0170ace8-9451-40b0-8d8e-d5534a05bba1" />
-
----
-
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Database Setup](#database-setup)
+Transform your ideas into functional prototypes and fully-fledged applications in seconds, complete with a live workspace, autonomous improvement agents, and a scalable architecture.
 
 ---
 
-## Overview
+## ✨ Features
 
-A full-stack AI-powered React app generator where users describe what they want to build, and the AI writes production-ready React code that renders live in the browser — just like Bolt.new or Lovable.
-
-Users get a live Sandpack preview, a persistent chat history, image upload support, and a credit-based subscription system. Pro users can trigger a Cline AI agent that autonomously improves the generated app file by file.
+- **Prompt to App:** Describe your idea and watch Locus AI generate a complete React application in real-time.
+- **Live Code Preview:** Integrated split-pane layout featuring a chat interface and a live Sandpack browser preview.
+- **Autonomous Refinement:** Pro users gain access to our powerful AI agent (powered by the Cline SDK) that can iteratively improve your app, file by file.
+- **Auto Error Fixing:** Automatic error detection in the preview pane with a "Fix with AI" one-click resolution.
+- **Vision Capabilities:** Upload images or mockups directly into the chat to guide the AI's generation.
+- **Project Workspaces:** Persistent chat histories and generated code saved across sessions.
+- **Code Export:** Download your generated application as a `.zip` file containing a ready-to-run React project.
+- **Tiered Billing:** Integrated credit system with Free, Starter, and Pro plans.
 
 ---
 
-## Tech Stack
+## 🛠️ Technology Stack
 
-| Layer | Technology |
+Locus AI is built with a modern, highly scalable full-stack architecture:
+
+| Category | Technology |
 |---|---|
-| Framework | Next.js 15 (App Router, TypeScript) |
-| Auth + Billing | Clerk |
-| Database | Supabase (via Prisma) |
-| Image Storage | Supabase Storage |
-| Rate Limiting | Arcjet |
-| AI Model | Gemini 3.5 Flash |
-| AI Agent (Improve) | Cline SDK (`@cline/sdk`) |
-| Code Editor + Preview | Sandpack (`@codesandbox/sandpack-react`) |
-| Styling | Tailwind CSS v4 + Shadcn UI |
-| ORM | Prisma (Postgres adapter) |
+| **Framework** | Next.js 15 (App Router, TypeScript) |
+| **Styling** | Tailwind CSS v4, Shadcn UI |
+| **Authentication & Billing** | Clerk |
+| **Database & Storage** | Supabase (PostgreSQL), Supabase Storage |
+| **ORM** | Prisma |
+| **AI Models** | Google Gemini 3.5 Flash |
+| **AI Agent SDK** | Cline SDK (`@cline/sdk`) |
+| **Code Engine** | Sandpack (`@codesandbox/sandpack-react`) |
+| **Security & Rate Limiting** | Arcjet |
 
 ---
 
-## Features
-
-### Landing Page
-- Prompt textarea with rotating placeholders and suggestion chips
-- Live browser mockup preview
-- Features section, how-it-works steps, pricing table (Clerk `<PricingTable />`)
-- Dark theme throughout
-
-### Auth (Clerk)
-- Google OAuth sign-in
-- User auto-created in Supabase on first login with free credits
-- Plan detection via Clerk `has()` — credits top-up on plan upgrade
-- Pricing modal accessible from the header credit badge
-
-### Workspace
-- Split-panel layout: Chat (left) + Code/Preview (right)
-- Full persistent chat history stored in Supabase
-- AI responses rendered with `react-markdown` and a live blinking cursor during streaming
-- Image upload via paperclip → Supabase Storage → CDN URL injected into prompt
-- Auto-scroll, hidden scrollbar, user avatars
-
-### AI Code Generation (`/api/gen-ai-code`)
-- Gemini 3.5 Flash with `thinkingConfig` enabled
-- Streams Gemini thought labels as live status steps in the chat panel
-- Returns strict JSON: `{ assistantMessage, title, files, dependencies }`
-- npm registry validation — hallucinated packages silently filtered
-- Atomic DB transaction: workspace upsert + credit deduction in one operation
-
-### Improve with AI — Cline SDK (`/api/improve`) — Pro + Starter
-- Cline `Agent` with two tools: `update_file` + `done_improving`
-- Agent streams reasoning live into the chat panel as it works
-- Files patched one at a time via SSE — Sandpack updates without remounting
-- `lifecycle: { completesRun: true }` ends the agent cleanly after all files are done
-- Gated to Starter and Pro plans
-
-### Fix with AI
-- Sandpack listens for runtime + compile errors
-- Error banner appears in Preview tab with "Fix with AI" button
-- Injects the error + context into Gemini and triggers a new generation
-
-### Code Panel (Sandpack)
-- Preview and Code tabs — auto-switches to Preview after each generation
-- Built-in CodeMirror editor (read-only), file explorer
-- Tailwind v3 loaded via CDN inside the preview iframe
-- Smart re-keying: `SandpackProvider` only remounts when file paths change, not contents
-- Export to ZIP — downloads a ready-to-run CRA project with `package.json`
-
-### Projects Page
-- Grid of all past workspaces with title, first prompt preview, message count, timestamp
-- Delete project with confirmation modal
-- Empty state with CTA
-
-### Token / Credit System
-- Free: 10 credits · Starter: 50 · Pro: 150
-- Cost: 1 credit per generation or improve
-- Checked client-side and server-side (402 response as backup)
-- Credits top up additively on plan upgrade, preserved on downgrade
-
----
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js 22+
-- A Supabase project
-- A Clerk application
-- A Google AI Studio API key (Gemini)
+- A Supabase Project (Database & Storage)
+- A Clerk Application
+- A Google AI Studio API Key (Gemini)
+- An Arcjet Key
 
 ### Installation
 
-```bash
-git clone https://github.com/roadsidecoder/buildai.git
-cd buildai
-npm install
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/dhruvi-git/locus-ai.git
+   cd locus-ai
+   ```
 
-Generate the Prisma client:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-npx prisma generate
-npx prisma db push
-```
+3. **Set up Environment Variables:**
+   Create a `.env.local` file in the root of the project and add the following keys:
+   ```env
+   # Clerk Auth
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+   CLERK_SECRET_KEY=
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
-Run the development server:
+   # Supabase
+   NEXT_PUBLIC_SUPABASE_URL=
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=
+   DATABASE_URL= # Postgres connection string
 
-```bash
-npm run dev
-```
+   # AI Providers
+   GEMINI_API_KEY=
 
-Open [http://localhost:3000](http://localhost:3000).
+   # Security
+   ARCJET_KEY=
+   ```
 
----
+4. **Initialize the Database:**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-## Environment Variables
+5. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-Create a `.env.local` file in the root:
-
-```env
-# Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-
-# Database (Supabase Postgres connection string)
-DATABASE_URL=
-
-# Google Gemini
-GEMINI_API_KEY=
-
-# Arcjet
-ARCJET_KEY=
-```
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Database Setup
+## 🗄️ Database Schema
 
-The Prisma schema has two models:
+The application relies on two primary models in Prisma:
 
-**User** — synced from Clerk on first login
-```
-id, clerkId, name, email, imageUrl, credits, plan, createdAt, updatedAt
-```
+- **`User`**: Synchronized automatically with Clerk upon first login. Tracks user credits and subscription plan.
+- **`Workspace`**: Represents an individual AI session. Stores chat messages, generated React files, dependencies, and metadata.
 
-**Workspace** — one per AI session
-```
-id, userId (FK), title, messages (JSON), fileData (JSON), createdAt, updatedAt
-```
-
-`fileData` stores both generated files and validated dependencies as a single JSON blob.
-
-Supabase Storage bucket: `workspace-images` — public, organized by `userId/workspaceId/`.
+Images uploaded during a session are stored in a public Supabase Storage bucket (`workspace-images`).
 
 ---
 
-## 🌟 Show your support
+## 🤝 Contributing
 
-Give a ⭐ if this project helped you learn something new!
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+
+## 📝 License
+
+This project is licensed under the MIT License.
